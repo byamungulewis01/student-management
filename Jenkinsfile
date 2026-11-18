@@ -10,6 +10,13 @@ pipeline {
                 echo 'Docker image build completed!'
             }
         }
+        stage('Deploy') {
+            steps {
+                sh 'docker rm -f devops-web || true'
+                sh 'docker run -d --name devops-web -p 8081:80 devops-app:1.0'
+            }
+        }
+        
     }
 
     post {
