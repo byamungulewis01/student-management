@@ -1,0 +1,40 @@
+# ACTIVITY 16: Automate releases with GitHub Actions
+name: Automate Application Releases
+
+# Run when a version tag (v1.0.0, v1.1.0...) is pushed
+on:
+  push:
+    tags:
+      - 'v*'
+
+# Allow GitHub Actions to publish releases
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Download project source code
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      # Step 2: Install Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Step 3: Install project dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Step 4: Run unit and integration tests
+      - name: Run application tests
+        run: npm test
+
+      # Step 5: Create GitHub Release (only runs if tests pass)
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
